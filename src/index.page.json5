@@ -1,0 +1,9 @@
+{
+    env: {
+        brand: 'coral-next',
+        cmsWidgetContainer: '<div>{{{ widget_markup }}}</div>'
+    },
+    contents: [
+        '/src/markup/app.html'
+    ]
+}

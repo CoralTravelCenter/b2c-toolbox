@@ -1,0 +1,25 @@
+{
+    "scripts": {
+        "api-proxy": "lcp --proxyUrl https://b2capi.coral.ru"
+    },
+    "alias": {
+        "vue": {
+            "global": "Vue"
+        },
+        "process": false,
+        "element-plus": {
+            "global": "ElementPlus"
+        }
+    },
+    "devDependencies": {
+        "local-cors-proxy": "^1.1.0"
+    },
+    "dependencies": {
+        "@vueuse/core": "^10.9.0",
+        "dayjs": "^1.11.11",
+        "element-plus": "^2.7.3",
+        "lodash": "^4.17.21",
+        "object-hash": "^3.0.0",
+        "vue": "^3.4.27"
+    }
+}
