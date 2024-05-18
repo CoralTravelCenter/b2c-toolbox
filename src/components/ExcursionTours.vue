@@ -3,6 +3,7 @@
 import { computed, inject, ref, watchEffect } from "vue";
 import { consultApi } from "../lib/b2c-api-adapter";
 import { groupBy } from "lodash";
+import { Checked } from '@element-plus/icons-vue';
 
 const { activeToolTitle } = inject('active-tool');
 
@@ -56,30 +57,50 @@ const groupedExcursionList = computed(() => {
     return groupBy(excursions, ex => ex.parent?.id);
 });
 
+const dateRangeToScan = ref();
+
+const okToAdd = computed(() => {
+    return !!selectedExcursion.value && dateRangeToScan.value?.every(date => !!date);
+});
+
 </script>
 
 <template>
     <div class="excursion-tours">
         <el-select v-model="selectedExcursion"
+                   value-key="locationId"
                    placeholder="Наименование тура"
                    :teleported="false"
                    :loading="isExcursionListQueryInProgress"
                    loading-text="Ищем..."
-                   filterable clearable
+                   filterable clearable remote-show-suffix
                    remote :remote-method="(query) => excursionListQueryKeywords = query">
             <template #empty>
                 <span>Ничего похожего не нашлось ;(</span>
             </template>
             <el-option-group v-for="(group, group_parent_id) in groupedExcursionList"
                              :label="group[0].parent.name" :key="group_parent_id">
-                <el-option v-for="excursion in group" :key="excursion.locationId">{{ excursion.name }}</el-option>
+                <el-option v-for="excursion in group"
+                           :value="excursion"
+                           :label="excursion.originalName"
+                           :key="excursion.locationId">{{ excursion.originalName }}</el-option>
             </el-option-group>
         </el-select>
+
+        <el-date-picker v-model="dateRangeToScan"
+                        :teleported="false"
+                        type="daterange"
+                        unlink-panels></el-date-picker>
+
+        <el-button type="success" :disabled="!okToAdd" :plain="!okToAdd" :icon="Checked">Добавить</el-button>
+
     </div>
 </template>
 
 <style scoped lang="less">
 .excursion-tours {
     padding: 2em 0;
+    display: flex;
+    gap: 2em;
 }
 </style>

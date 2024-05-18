@@ -26,6 +26,8 @@ const { activeTool } = inject('active-tool');
 .dashboard {
     padding: 2em 0;
     display: flex;
+    align-items: flex-start;
+    gap: 1.5em;
     .tool-card {
         cursor: pointer;
     }
