@@ -6,6 +6,10 @@ import { groupBy } from "lodash";
 import { Checked } from '@element-plus/icons-vue';
 import Excursion from "./excursion";
 import dayjs from "dayjs";
+import locale_ru from 'dayjs/locale/ru'
+import OffersMonthCalendar from "./OffersMonthCalendar.vue";
+dayjs.locale(locale_ru);
+
 
 const { activeToolTitle } = inject('active-tool');
 
@@ -49,10 +53,22 @@ const okToAdd = computed(() => {
 });
 
 const excursions = reactive([]);
+const excursionOffers = computed(() => excursions.map(e => e.offers).flat());
+const excursionOffersMonths = computed(() => {
+    const uniq = new Set(Object.keys(groupBy(excursionOffers.value, offer => offer.date.format('YYYY-MM'))));
+    return [...uniq].sort();
+});
 
 function addSelectedExcursion() {
     excursions.push(selectedExcursion.value);
     selectedExcursion.value.scanRange = dateRangeToScan.value;
+}
+
+function disableBeforeTodayOrAfterHalfAYear(date) {
+    const d = dayjs(date);
+    const today = dayjs().endOf('day');
+    const halfAYear = today.add(6, 'month').endOf('month');
+    return d.isBefore(today) || d.isAfter(halfAYear);
 }
 
 </script>
@@ -81,7 +97,7 @@ function addSelectedExcursion() {
             </el-select>
             <el-date-picker v-model="dateRangeToScan"
                             :teleported="false"
-                            type="daterange" :disabled-date="(d) => dayjs(d).isBefore(dayjs().endOf('day'))"
+                            type="daterange" :disabled-date="disableBeforeTodayOrAfterHalfAYear"
                             unlink-panels></el-date-picker>
 
             <el-button type="success"
@@ -89,10 +105,25 @@ function addSelectedExcursion() {
                        :icon="Checked" @click="addSelectedExcursion">Добавить</el-button>
         </div>
 
-        <el-table :data="excursions">
-            <el-table-column width="40"></el-table-column>
+        <el-table :data="excursions" table-layout="auto">
+            <el-table-column>
+                <template #default="{ row: excursion }">
+                    <el-progress type="circle" :width="64" :stroke-width="4"
+                                 :percentage="excursion.scanCompletePercent"
+                                 :status="excursion.scanCompletePercent === 100 ? 'success' : '' "></el-progress>
+                </template>
+            </el-table-column>
             <el-table-column label="Наименование" prop="name"></el-table-column>
             <el-table-column label="Ночей" prop="nights" align="center" header-align="center"></el-table-column>
+
+            <el-table-column v-for="month in excursionOffersMonths" header-align="center" align="center">
+                <template #header>{{ dayjs(month).format('MMMM') }}</template>
+                <template #default="{ row: excursion }">
+<!--                    {{ excursion.getOffersInMonth(month).length }}-->
+                    <OffersMonthCalendar :month="month" :offers="excursion.getOffersInMonth(month)"/>
+                </template>
+            </el-table-column>
+
         </el-table>
 
     </div>
@@ -108,8 +139,20 @@ function addSelectedExcursion() {
         display: flex;
         gap: 2em;
     }
-    .el-table {
-
+    :deep(.el-table) {
+        .el-progress {
+            .el-progress__text {
+                font-size: 12px!important;
+                .el-icon {
+                    width: 2em;
+                    height: 2em;
+                    > svg {
+                        width: 2em;
+                        height: 2em;
+                    }
+                }
+            }
+        }
     }
 }
 </style>

@@ -5,6 +5,8 @@ import { useDark } from "@vueuse/core";
 import { Sunny, Moon, HomeFilled } from '@element-plus/icons-vue';
 import DashBoard from "./DashBoard.vue";
 
+window.ElementPlus.dayjs().$locale().weekStart = 1;
+
 const isDark = useDark();
 const activeTool = shallowRef(DashBoard);
 const activeToolTitle = ref();

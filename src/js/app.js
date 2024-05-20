@@ -5,5 +5,5 @@ import ElementPlus from 'element-plus';
 
 asap(async () => {
     await hostReactAppReady();
-    createApp(ToolBox).use(ElementPlus).mount('#toolbox-app');
+    createApp(ToolBox).use(ElementPlus, { locale: ElementPlusLocaleRu }).mount('#toolbox-app');
 });

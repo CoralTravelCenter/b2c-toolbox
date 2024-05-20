@@ -21,7 +21,9 @@ export async function consultApi(endpoint, method = 'post', params = {}) {
     if (method.toUpperCase() === 'GET') {
         return new Promise(async resolve => {
             const api_data = await fetch(`${ apiHost }${ endpoint }?${ new URLSearchParams(params).toString() }`).then(response => response.json());
-            sessionStorage.setItem(request_hash, JSON.stringify(api_data));
+            try {
+                sessionStorage.setItem(request_hash, JSON.stringify(api_data));
+            } catch (e) {}
             resolve(api_data);
         });
     } else if (method.toUpperCase() === 'POST') {
@@ -31,7 +33,9 @@ export async function consultApi(endpoint, method = 'post', params = {}) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(params)
             }).then(response => response.json());
-            sessionStorage.setItem(request_hash, JSON.stringify(api_data));
+            try {
+                sessionStorage.setItem(request_hash, JSON.stringify(api_data));
+            } catch (e) {}
             resolve(api_data);
         });
     }
