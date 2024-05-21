@@ -13,6 +13,7 @@ export default class Excursion {
     parent;
 
     offers = [];
+    _failed = false;
 
     _scanRange = [];
     get scanRange() {
@@ -27,7 +28,19 @@ export default class Excursion {
 
     set scanRange([start_date, end_date]) {
         this._scanRange = [dayjs(start_date), dayjs(end_date).endOf('day')];
-        this.scan();
+        try {
+            this.scan();
+        } catch (ex) {
+            this._failed = true;
+        }
+    }
+
+    get scanStatus() {
+        if (this._failed) {
+            return 'exception';
+        } else {
+            return this.scanCompletePercent === 100 ? (!!this.offers.length ? 'success' : 'warning') : '';
+        }
     }
 
     get datesSequence() {

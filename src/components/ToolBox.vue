@@ -28,12 +28,20 @@ function goHome() {
             <template #extra>
                 <el-switch v-model="isDark" :active-action-icon="Moon" :inactive-action-icon="Sunny"></el-switch>
             </template>
-            <Component :is="activeTool"/>
+            <KeepAlive>
+                <Component :is="activeTool"/>
+            </KeepAlive>
         </el-page-header>
     </div>
 </template>
 
-<style scoped  lang="less">
+<style lang="less">
+body {
+    overflow: hidden!important;
+}
+</style>
+
+<style scoped lang="less">
 .tool-box {
     position: fixed;
     z-index: 99999;
@@ -41,6 +49,7 @@ function goHome() {
     top: 0;
     width: 100vw;
     height: 100vh;
+    overflow: auto;
     background-color: var(--el-bg-color-page);
     padding: 2em;
     box-sizing: border-box;

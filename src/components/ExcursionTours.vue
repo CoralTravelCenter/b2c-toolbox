@@ -3,11 +3,12 @@
 import { computed, inject, reactive, ref, watchEffect } from "vue";
 import { consultApi } from "../lib/b2c-api-adapter";
 import { groupBy } from "lodash";
-import { Checked } from '@element-plus/icons-vue';
+import { Checked, CopyDocument } from '@element-plus/icons-vue';
 import Excursion from "./excursion";
 import dayjs from "dayjs";
 import locale_ru from 'dayjs/locale/ru'
 import OffersMonthCalendar from "./OffersMonthCalendar.vue";
+import { useClipboard } from "@vueuse/core";
 dayjs.locale(locale_ru);
 
 
@@ -62,6 +63,7 @@ const excursionOffersMonths = computed(() => {
 function addSelectedExcursion() {
     excursions.push(selectedExcursion.value);
     selectedExcursion.value.scanRange = dateRangeToScan.value;
+    selectedExcursion.value = null;
 }
 
 function disableBeforeTodayOrAfterHalfAYear(date) {
@@ -69,6 +71,17 @@ function disableBeforeTodayOrAfterHalfAYear(date) {
     const today = dayjs().endOf('day');
     const halfAYear = today.add(6, 'month').endOf('month');
     return d.isBefore(today) || d.isAfter(halfAYear);
+}
+
+const okToCopyMarkup = computed(() => {
+    const excursions_ok = excursions.filter(e => e.scanStatus !== 'warning');
+    return excursions_ok.length && excursions_ok.every(e => e.scanStatus === 'success');
+});
+
+const { copy: copy2clipboard } = useClipboard();
+
+function copyMarkup() {
+    copy2clipboard('MARKUP GOES HERE....');
 }
 
 </script>
@@ -92,7 +105,8 @@ function disableBeforeTodayOrAfterHalfAYear(date) {
                     <el-option v-for="excursion in group"
                                :value="excursion"
                                :label="excursion.originalName"
-                               :key="excursion.locationId">{{ excursion.originalName }}</el-option>
+                               :key="excursion.locationId"
+                               :disabled="excursions.includes(excursion)">{{ excursion.originalName }}</el-option>
                 </el-option-group>
             </el-select>
             <el-date-picker v-model="dateRangeToScan"
@@ -106,11 +120,11 @@ function disableBeforeTodayOrAfterHalfAYear(date) {
         </div>
 
         <el-table :data="excursions" table-layout="auto">
-            <el-table-column>
+            <el-table-column width="1%">
                 <template #default="{ row: excursion }">
                     <el-progress type="circle" :width="64" :stroke-width="4"
                                  :percentage="excursion.scanCompletePercent"
-                                 :status="excursion.scanCompletePercent === 100 ? 'success' : '' "></el-progress>
+                                 :status="excursion.scanStatus"></el-progress>
                 </template>
             </el-table-column>
             <el-table-column label="Наименование" prop="name"></el-table-column>
@@ -119,12 +133,17 @@ function disableBeforeTodayOrAfterHalfAYear(date) {
             <el-table-column v-for="month in excursionOffersMonths" header-align="center" align="center">
                 <template #header>{{ dayjs(month).format('MMMM') }}</template>
                 <template #default="{ row: excursion }">
-<!--                    {{ excursion.getOffersInMonth(month).length }}-->
                     <OffersMonthCalendar :month="month" :offers="excursion.getOffersInMonth(month)"/>
                 </template>
             </el-table-column>
 
         </el-table>
+
+        <div class="controls">
+            <el-button type="success" :icon="CopyDocument"
+                       :plain="!okToCopyMarkup" :disabled="!okToCopyMarkup"
+                       @click="copyMarkup">Копировать CMS компонент</el-button>
+        </div>
 
     </div>
 </template>
@@ -153,6 +172,11 @@ function disableBeforeTodayOrAfterHalfAYear(date) {
                 }
             }
         }
+    }
+    .controls {
+        display: flex;
+        gap: 1.5em;
+        justify-content: center;
     }
 }
 </style>
