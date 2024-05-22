@@ -2,7 +2,7 @@ import hash from 'object-hash';
 
 export async function consultApi(endpoint, method = 'post', params = {}) {
     const request_hash = hash({ endpoint, method, params });
-    console.log('+++ consultApi: params: %o; hash: %o', params, request_hash);
+    // console.log('+++ consultApi: params: %o; hash: %o', params, request_hash);
     const cached_response = sessionStorage.getItem(request_hash);
     if (cached_response) {
         return Promise.resolve(JSON.parse(cached_response));

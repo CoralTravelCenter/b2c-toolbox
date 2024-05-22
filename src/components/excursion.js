@@ -13,6 +13,8 @@ export default class Excursion {
     parent;
 
     offers = [];
+    bestOffer;
+
     _failed = false;
 
     _scanRange = [];
@@ -92,14 +94,26 @@ export default class Excursion {
         for (let queryParams of this.queryParamsSequence) {
             const api_result = await consultApi('/OnlyHotelProduct/PriceSearchList', 'post', queryParams);
             this._queriesCompleteCount++;
-            const offer = api_result.result?.products?.at(0)?.offers?.at(0);
+            const result = api_result.result;
+            const product = result?.products?.at(0);
+            const offer = product?.offers?.at(0);
             if (offer) {
-                console.log('+++ offer: %o', offer);
-                this.offers.push({
+                // console.log('+++ offer: %o', offer);
+                const offer_data = {
                     date: dayjs(offer.checkInDate),
                     price: offer.price.amount,
                     link: offer.link
-                });
+                };
+                if (!this.bestOffer || offer_data.price < this.bestOffer.price) {
+                    this.bestOffer = {
+                        price: offer_data.price,
+                        installment: offer.installmentCredit?.monthlyPrice?.amount,
+                        room: result.rooms[offer.rooms[0].roomKey].name,
+                        meal: result.meals[offer.rooms[0].mealKey].name,
+                        visual: product.hotel.images?.at(0)?.sizes?.at(0)?.url
+                    };
+                }
+                this.offers.push(offer_data);
             }
         }
     }
