@@ -99,8 +99,10 @@ export default class Excursion {
             const offer = product?.offers?.at(0);
             if (offer) {
                 // console.log('+++ offer: %o', offer);
+                const date_djs = dayjs(offer.checkInDate);
+                date_djs.toJSON = (function (){ return this.format('YYYY-MM-DD') }).bind(date_djs);
                 const offer_data = {
-                    date: dayjs(offer.checkInDate),
+                    date: date_djs,
                     price: offer.price.amount,
                     link: offer.link
                 };
