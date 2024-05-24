@@ -83,7 +83,7 @@ function offerHrefByDay(day) {
     .day {
         padding: 2px;
         color: inherit;
-        text-decoration: none;
+        text-decoration: none!important;
         &.other-month {
             color: transparent;
             background: none!important;
