@@ -81,7 +81,10 @@ const okToCopyMarkup = computed(() => {
 const { copy: copy2clipboard } = useClipboard();
 
 function copyMarkup() {
-    copy2clipboard(JSON.stringify(excursions.filter(e => !!e.offers.length)));
+    copy2clipboard('<div><script type="application/json">'
+        + JSON.stringify(excursions.filter(e => !!e.offers.length))
+        + '</' + 'script></div>'
+    );
 }
 
 </script>
