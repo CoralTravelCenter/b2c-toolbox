@@ -79,6 +79,7 @@ function offerHrefByDay(day) {
         background-color: var(--el-color-success-light-5);
         color: var(--el-table-text-color);
         border-radius: 2px;
+        text-decoration: none!important;
     }
     .day {
         padding: 2px;
