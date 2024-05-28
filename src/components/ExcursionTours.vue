@@ -78,13 +78,18 @@ const okToCopyMarkup = computed(() => {
     return excursions_ok.length && excursions_ok.every(e => e.scanStatus === 'success');
 });
 
+const widgetOptions = reactive({
+    commonDatesSelector: true
+});
+
 const { copy: copy2clipboard } = useClipboard();
 
 function copyMarkup() {
-    copy2clipboard('<div><script type="application/json">'
-        + JSON.stringify(excursions.filter(e => !!e.offers.length))
-        + '</' + 'script></div>'
-    );
+    const setup = {
+        options: widgetOptions,
+        excursions: excursions.filter(e => !!e.offers.length)
+    };
+    copy2clipboard('<div><script type="application/json">' + JSON.stringify(setup) + '</' + 'script></div>');
 }
 
 </script>
@@ -130,6 +135,12 @@ function copyMarkup() {
                                  :status="excursion.scanStatus"></el-progress>
                 </template>
             </el-table-column>
+            <el-table-column width="1%">
+                <template #header>Топ-3</template>
+                <template #default="{ row: excursion }">
+                    <el-switch v-model="excursion.top3"></el-switch>
+                </template>
+            </el-table-column>
             <el-table-column label="Наименование" prop="name"></el-table-column>
             <el-table-column label="Ночей" prop="nights" align="center" header-align="center"></el-table-column>
 
@@ -141,6 +152,15 @@ function copyMarkup() {
             </el-table-column>
 
         </el-table>
+
+        <el-descriptions column="2" border>
+            <template #title>Опции интерфейса</template>
+            <el-descriptions-item :width="1">
+                <template #label><span style="white-space: nowrap">Общий селектор/фильтр по датам</span></template>
+                <el-switch v-model="widgetOptions.commonDatesSelector"
+                           active-text="Показывать" inactive-text="Не показывать"></el-switch>
+            </el-descriptions-item>
+        </el-descriptions>
 
         <div class="controls">
             <el-button type="success" :icon="CopyDocument"
