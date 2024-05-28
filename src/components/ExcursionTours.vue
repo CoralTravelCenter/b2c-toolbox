@@ -89,7 +89,7 @@ function copyMarkup() {
         options: widgetOptions,
         excursions: excursions.filter(e => !!e.offers.length)
     };
-    copy2clipboard('<div><script type="application/json">' + JSON.stringify(setup) + '</' + 'script></div>');
+    copy2clipboard('<div><script type="application/json" data-excursion-vue>' + JSON.stringify(setup) + '</' + 'script></div>');
 }
 
 </script>
