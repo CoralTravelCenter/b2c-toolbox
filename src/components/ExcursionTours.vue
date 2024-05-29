@@ -9,6 +9,7 @@ import dayjs from "dayjs";
 import locale_ru from 'dayjs/locale/ru'
 import OffersMonthCalendar from "./OffersMonthCalendar.vue";
 import { useClipboard } from "@vueuse/core";
+import { ElMessage } from "element-plus";
 dayjs.locale(locale_ru);
 
 
@@ -84,12 +85,17 @@ const widgetOptions = reactive({
 
 const { copy: copy2clipboard } = useClipboard();
 
-function copyMarkup() {
+async function copyMarkup() {
     const setup = {
         options: widgetOptions,
         excursions: excursions.filter(e => !!e.offers.length)
     };
-    copy2clipboard('<div><script type="application/json" data-excursion-vue>' + JSON.stringify(setup) + '</' + 'script></div>');
+    try {
+        await copy2clipboard('<div><script type="application/json" data-excursion-vue>' + JSON.stringify(setup) + '</' + 'script></div>');
+        ElMessage({ message: 'HTML разметка скопирована', type:'success', showClose: true });
+    } catch (ex) {
+        ElMessage({ message: 'Чет пошло не так ;(', type:'error', showClose: true, duration: 0 });
+    }
 }
 
 </script>
