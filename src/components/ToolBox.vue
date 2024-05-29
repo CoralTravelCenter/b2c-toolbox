@@ -44,7 +44,7 @@ body {
 <style scoped lang="less">
 .tool-box {
     position: fixed;
-    z-index: 2000;
+    z-index: 9999;
     left: 0;
     top: 0;
     width: 100vw;

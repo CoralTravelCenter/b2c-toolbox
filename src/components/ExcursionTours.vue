@@ -92,9 +92,9 @@ async function copyMarkup() {
     };
     try {
         await copy2clipboard('<div><script type="application/json" data-excursion-vue>' + JSON.stringify(setup) + '</' + 'script></div>');
-        ElMessage({ message: 'HTML разметка скопирована', type:'success', showClose: true });
+        ElMessage({ message: 'HTML разметка скопирована', type: 'success', showClose: true, customClass: 'toolbox-msg' });
     } catch (ex) {
-        ElMessage({ message: 'Чет пошло не так ;(', type:'error', showClose: true, duration: 0 });
+        ElMessage({ message: 'Чет пошло не так ;(', type:'error', showClose: true, duration: 0, customClass: 'toolbox-msg' });
     }
 }
 
@@ -176,6 +176,12 @@ async function copyMarkup() {
 
     </div>
 </template>
+
+<style lang="less">
+.toolbox-msg {
+    z-index: 10000!important;
+}
+</style>
 
 <style scoped lang="less">
 .excursion-tours {
