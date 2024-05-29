@@ -70,8 +70,9 @@ function addSelectedExcursion() {
 function disableBeforeTodayOrAfterHalfAYear(date) {
     const d = dayjs(date);
     const today = dayjs().endOf('day');
-    const halfAYear = today.add(6, 'month').endOf('month');
-    return d.isBefore(today) || d.isAfter(halfAYear);
+    // const halfAYear = today.add(6, 'month').endOf('month');
+    // return d.isBefore(today) || d.isAfter(halfAYear);
+    return d.isBefore(today);
 }
 
 const okToCopyMarkup = computed(() => {
