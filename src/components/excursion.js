@@ -70,7 +70,21 @@ export default class Excursion {
 
     constructor(location) {
         if (location.type === 7) {
-            const [, days, nights, name] = location.name.match(/^\s*(\d+).+?\/\s*(\d+)\s*\S+\s+(.+)/);
+            let [, days, nights, name] = location.name.match(/^\s*(\d+).+?\/\s*(\d+)\s*\S+\s+(.+)/) ?? [];
+            if (!(days && nights && name)) {
+                [name, days] = location.name.match(/(\d+)\s+((день)|(дня)|(дней))/ui) ?? [];
+                if (name && days) {
+                    name = location.name;
+                    nights = days - 1;
+                }
+            }
+            if (!(days && nights && name)) {
+                [name, nights] = location.name.match(/(\d+)\s+((ночь)|(ночи)|(ночей))/ui) ?? [];
+                if (name && nights) {
+                    name = location.name;
+                    days = nights + 1;
+                }
+            }
             if (days && nights && name) {
                 this.locationId = location.id;
                 this.locationType = location.type;

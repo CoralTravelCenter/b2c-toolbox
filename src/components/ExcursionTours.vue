@@ -42,7 +42,9 @@ const groupedExcursionList = computed(() => {
         for (let location of list) {
             try {
                 yield new Excursion(location);
-            } catch (ex) {}
+            } catch (ex) {
+                console.warn(ex);
+            }
         }
     })(backendLocationList.value)];
     return groupBy(excursions, ex => ex.parent?.id);
