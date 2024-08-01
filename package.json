@@ -1,6 +1,6 @@
 {
     "scripts": {
-        "api-proxy": "lcp --proxyUrl https://b2capi.coral.ru"
+        "api-proxy": "lcp --proxyUrl https://b2capi.sunmar.ru"
     },
     "alias": {
         "vue": {

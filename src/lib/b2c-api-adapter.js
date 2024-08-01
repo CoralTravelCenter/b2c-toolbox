@@ -15,7 +15,7 @@ export async function consultApi(endpoint, method = 'post', params = {}) {
         if (location.hostname === 'localhost') {
             apiHost = 'http://localhost:8010/proxy';
         } else {
-            apiHost = '//b2capi.coral.ru';
+            apiHost = '//' + location.hostname.replace(/www|new/, 'b2capi');
         }
     }
     if (method.toUpperCase() === 'GET') {
