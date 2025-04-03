@@ -2,3 +2,5 @@
 /dev/
 /prod/
 /@CMS/
+
+node_modules
